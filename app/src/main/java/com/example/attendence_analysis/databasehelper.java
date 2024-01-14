@@ -52,4 +52,10 @@ public class databasehelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from signindata", null);
         return res;
     }
+
+    public Cursor getSelected(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor res = db.rawQuery("select id,pass from signindata where id=" + id + " ", null);
+        return res;
+    }
 }
