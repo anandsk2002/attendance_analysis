@@ -18,8 +18,9 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     databasehelper db_helper;
     EditText editText, editText2;
-    Button btn, btn2;
+    Button btn, btn2, btn3;
     TextView txt;
+    int idfunc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +29,23 @@ public class MainActivity extends AppCompatActivity {
         db_helper = new databasehelper(this);
         btn2 = findViewById(R.id.button2);
         btn = findViewById(R.id.button);
+        btn3 = findViewById(R.id.button3);
         editText = findViewById(R.id.editTextText);
         editText2 = findViewById(R.id.editTextText2);
         txt = findViewById(R.id.textview);
+
         addData();
         viewAllData();
 //        logins();
-        getSelect(221002);
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                idfunc = Integer.parseInt(editText.getText().toString());
+                getSelect(idfunc);
+            }
+        });
+
+
     }
 
 //    public void logins() {
