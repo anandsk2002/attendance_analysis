@@ -2,6 +2,9 @@ package com.example.attendence_analysis;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.backup.BackupAgentHelper;
+import android.app.backup.FileBackupHelper;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -10,17 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     databasehelper db_helper;
     EditText editText, editText2;
-    Button btn, btn2, btn3;
+    Button btn, btn2;
     TextView txt;
-    int idfunc;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,87 +29,66 @@ public class MainActivity extends AppCompatActivity {
         db_helper = new databasehelper(this);
         btn2 = findViewById(R.id.button2);
         btn = findViewById(R.id.button);
-        btn3 = findViewById(R.id.button3);
         editText = findViewById(R.id.editTextText);
         editText2 = findViewById(R.id.editTextText2);
         txt = findViewById(R.id.textview);
 
+
         addData();
         viewAllData();
 //        logins();
-        btn3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                idfunc = Integer.parseInt(editText.getText().toString());
-                getSelect(idfunc);
-            }
-        });
 
-
-    }
-
-//    public void logins() {
-//        btn2 = findViewById(R.id.button2);
-//        btn2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Cursor res = db_helper.getAllData();
-//                if (res.getCount() == 0) {
-//                    //show message
-//                    return;
-//                }
-//                while (res.moveToNext()) {
-//                    String password = res.getString(1);
-//                    String inp_password = editText2.getText().toString();
-//                    String id = res.getString(0);
-//                    String id_input = editText.getText().toString();
-//                    if (password.equals(inp_password) && id.equals(id_input)) {
-//                        Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), "Login Fail", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-    public void getSelect(int a) {
-        // Assume you have a TextView in your layout with the id "textViewResult"
-        TextView textViewResult = findViewById(R.id.textView);
-
-        // Perform the database query
-        Cursor res = db_helper.getSelected(a);
-
-        // Check if there is a result
+        //Don't Touch Below Code
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (res != null && res.moveToFirst()) {
-                    // Assuming you have two columns, adjust column indices accordingly
-                    @SuppressLint("Range") int id = res.getInt(res.getColumnIndex("id"));
-                    @SuppressLint("Range") String pass = res.getString(res.getColumnIndex("pass"));
-
-                    // Format the result and display it in the TextView
-                    String resultText = "ID: " + id + ", Pass: " + pass;
-                    textViewResult.setText(resultText);
-                    int id_db = res.getInt(0);
-                    String pass_db = res.getString(1);
-                    int id_inp = Integer.parseInt(editText.getText().toString());
-                    String pass_inp = editText2.getText().toString();
-
-                    if (pass_db.equals(pass_inp) && id_db == id_inp) {
-                        Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Login Fail", Toast.LENGTH_SHORT).show();
-                    }
-
-                    // Close the cursor when done
-                } else {
-                    // Handle the case where there is no result
-                    textViewResult.setText("No result found.");
+                try {
+                    String value = editText.getText().toString();
+                    int param = Integer.parseInt(value);
+                    getSelect(param);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
                 }
             }
         });
+        //Don't touch Above Code till comment
+
+    }
+
+    public void getSelect(int a) {
+
+        Cursor res = db_helper.getSelected(a);
+
+                if (res != null && res.moveToFirst()) {
+                    // Assuming you have two columns, adjust column indices accordingly
+                    @SuppressLint("Range") int id = res.getInt(res.getColumnIndex("reg_no"));
+                    @SuppressLint("Range") String pass = res.getString(res.getColumnIndex("password"));
+
+                    // Format the result and display it in the TextView
+
+                    int id_inp = Integer.parseInt(editText.getText().toString());
+                    String pass_inp = editText2.getText().toString();
+
+                    if (pass.equals(pass_inp) && id == id_inp) {
+                        Toast.makeText(getApplicationContext(), "Login Success", Toast.LENGTH_SHORT).show();
+                        try {
+                            Thread.sleep(1500);
+                            Intent mainpage = new Intent(MainActivity.this, AfterLogin.class);
+                            mainpage.putExtra("reg_no", id);
+                            startActivity(mainpage);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Login Fail", Toast.LENGTH_SHORT).show();
+                    }
+                    // Close the cursor when done
+                    res.close();
+                } else {
+                    Toast.makeText(getApplicationContext(), "No result found", Toast.LENGTH_SHORT).show();
+                }
+
     }
 
 
@@ -147,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addData() {
-        boolean is_Inserted = db_helper.insertData("welcome1", 221002);
+        boolean is_Inserted = db_helper.insertData("welcome3", 221003, "AnandK", 10, 8);
         if (is_Inserted)
             Toast.makeText(MainActivity.this, "Data Inserted", Toast.LENGTH_LONG).show();
         else
@@ -155,3 +134,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
