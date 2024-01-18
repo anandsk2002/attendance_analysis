@@ -2,8 +2,6 @@ package com.example.attendence_analysis;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.backup.BackupAgentHelper;
-import android.app.backup.FileBackupHelper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -28,14 +26,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         db_helper = new databasehelper(this);
         btn2 = findViewById(R.id.button2);
-        btn = findViewById(R.id.button);
         editText = findViewById(R.id.editTextText);
         editText2 = findViewById(R.id.editTextText2);
-        txt = findViewById(R.id.textview);
+//        txt = findViewById(R.id.textview);
 
 
         addData();
-        viewAllData();
+//        viewAllData();
 //        logins();
 
         //Don't Touch Below Code
